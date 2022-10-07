@@ -5,40 +5,22 @@ import Search from './components/Search'
 import Header from './components/Header'
 
 function App() {
-  const [notes, setnotes] =useState([{
-    id:nanoid(),
-    text:'This is my first note',
-    date:'08/09/2022',
-  },
-  {
-    id:nanoid(),
-    text:'This is my second note',
-    date:'08/09/2022',
-  },
-  {
-    id:nanoid(),
-    text:'This is my third note',
-    date:'08/09/2022',
-  },
-  {
-    id:nanoid(),
-    text:'This is my new note',
-    date:'08/09/2022',
-  }
-])
+  const [notes, setnotes] =useState(()=>{
+    return JSON.parse(localStorage.getItem('reactapp')) || []
+  }))
 
 const [searchText, setSearchText] = useState('')
 const [darkMode, setDarkMode] = useState(false)
 
-useEffect(() => {
-  const savedNotes = JSON.parse(
-    localStorage.getItem('reactapp')
-  );
+// useEffect(() => {
+//   const savedNotes = JSON.parse(
+//     localStorage.getItem('reactapp')
+//   );
 
-  if (savedNotes) {
-    setnotes(savedNotes);
-  }
-}, []);
+//   if (savedNotes) {
+//     setnotes(savedNotes);
+//   }
+// }, []);
 
 useEffect(() => {
   localStorage.setItem(
