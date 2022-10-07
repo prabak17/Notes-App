@@ -1,25 +1,82 @@
-import logo from './logo.svg';
-import './App.css';
+import React, { useEffect, useState } from 'react'
+import NoteList from './components/NoteList'
+import {nanoid} from 'nanoid'
+import Search from './components/Search'
+import Header from './components/Header'
 
 function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+  const [notes, setnotes] =useState([{
+    id:nanoid(),
+    text:'This is my first note',
+    date:'08/09/2022',
+  },
+  {
+    id:nanoid(),
+    text:'This is my second note',
+    date:'08/09/2022',
+  },
+  {
+    id:nanoid(),
+    text:'This is my third note',
+    date:'08/09/2022',
+  },
+  {
+    id:nanoid(),
+    text:'This is my new note',
+    date:'08/09/2022',
+  }
+])
+
+const [searchText, setSearchText] = useState('')
+const [darkMode, setDarkMode] = useState(false)
+
+useEffect(() => {
+  const savedNotes = JSON.parse(
+    localStorage.getItem('reactapp')
   );
+
+  if (savedNotes) {
+    setnotes(savedNotes);
+  }
+}, []);
+
+useEffect(() => {
+  localStorage.setItem(
+    'reactapp',
+    JSON.stringify(notes)
+  );
+}, [notes]);
+
+const addNote =(text)=>{
+  const date = new Date();
+  const newNote ={
+    id: nanoid(),
+    text: text,
+    date: date.toLocaleDateString()
+  }
+  const newNotes =[...notes, newNote]
+  console.log(newNotes);
+  setnotes(newNotes)
 }
 
-export default App;
+const deleteNote =(id)=>{
+ const newNotes = notes.filter((note)=> note.id !== id)
+ setnotes(newNotes)
+}
+
+  return (
+    <div className={`${darkMode && 'dark-mode'}`}>
+      <div className='container'>
+      <Header handleDarkMode ={setDarkMode}/>
+      <Search handleSearchNote={setSearchText}/>
+      <NoteList 
+      notes={notes.filter((note)=> note.text.toLocaleLowerCase().includes(searchText))} 
+      handleAddNote ={addNote} 
+      handledeleteNotes={deleteNote}/>
+    </div>
+    </div>
+    
+  )
+}
+
+export default App
